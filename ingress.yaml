@@ -1,0 +1,26 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: guac-ingress
+  namespace: guacamole
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    cert-manager.io/cluster-issuer: http-clusterissuer
+spec:
+  rules:
+  - host: guac.thejimnicholson.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: guacamole-http
+            port:
+              number: 8080  
+  tls:
+  - hosts:
+    - guac.thejimnicholson.com
+    secretName: guac.thejimnicholson.com

@@ -1,0 +1,43 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: guacamole-db
+  namespace: guacamole
+spec:
+  selector:
+    app: guacamole
+  ports:
+  - name: guacamole-db
+    protocol: TCP
+    port: 5432
+    targetPort: 5432
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: guacd
+  namespace: guacamole
+spec:
+  selector:
+    app: guacamole
+  ports:
+  - name: guacd
+    protocol: TCP
+    port: 4822
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: guacamole-http
+  namespace: guacamole
+spec:
+  selector:
+    app: guacamole
+  ports:
+  - name: guacamole-http
+    protocol: TCP
+    port: 8080
+---

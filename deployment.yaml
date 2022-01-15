@@ -53,30 +53,32 @@ spec:
           name: guacd-port
       - name: guacamole
         image: guacamole/guacamole:latest
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 35
-          periodSeconds: 60
-          successThreshold: 1
-          timeoutSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8080
-            scheme: HTTP
-          initialDelaySeconds: 60
+        # livenessProbe:
+        #   httpGet:
+        #     path: /guacamole
+        #     port: 8080
+        #     scheme: HTTP
+        #   initialDelaySeconds: 35
+        #   periodSeconds: 60
+        #   successThreshold: 1
+        #   timeoutSeconds: 3
+        # readinessProbe:
+        #   httpGet:
+        #     path: /guacamole
+        #     port: 8080
+        #     scheme: HTTP
+        #   initialDelaySeconds: 60
         resources:
           requests:
             cpu: 100m
             memory: 1Gi
         env:
         - name: GUACD_HOSTNAME
-          value: guacd
+          value: guacd.guacamole.svc.cluster.local
+        - name: GUACD_PORT
+          value: "4822"
         - name: POSTGRES_HOSTNAME
-          value: guacdb
+          value: guacamole-db.guacamole.svc.cluster.local
         - name: POSTGRES_DATABASE
           value: postgres
         - name: POSTGRES_USER
@@ -114,6 +116,8 @@ spec:
             command: ["psql", "-U", "postgres", "-d", "postgres", "-c", "SELECT 1"]
           initialDelaySeconds: 15
         env:
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
@@ -128,7 +132,7 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort:  5432
-          name:  guacamole-db
+          name: guacamole-db
         volumeMounts:
         - name: guac-initdb
           mountPath: /docker-entrypoint-initdb.d
